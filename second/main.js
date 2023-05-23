@@ -17,10 +17,7 @@
     var inputBtnControl = Widget.button({
       id: "inputBtnControl",
       label: "입력",
-      onClick: function () {
-        inputBtnClickHandler();
-        todolist.reload(getSortedItems({ done: false }));
-      },
+      onClick: inputBtnClickHandler,
     });
 
     todolist = Widget.ul({
@@ -61,6 +58,8 @@
 
     inputControl.element.value = "";
     inputControl.element.focus();
+
+    todolist.reload(getSortedItems({ done: false }));
   }
 
   function getSortedItems(option) {

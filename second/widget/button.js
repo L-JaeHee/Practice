@@ -1,17 +1,12 @@
 // option
 // id: 식별Id
 // label: textContent
-// callbacks({event: function ()}): 콜백
+// onClick: 콜백
 export function createButton(option) {
   var buttonEl = document.createElement("button");
   buttonEl.id = option.id;
   buttonEl.textContent = option.label;
-
-  if (option.callbacks) {
-    for (var callback of Object.keys(option.callbacks)) {
-      buttonEl[callback.toLowerCase()] = option.callbacks[callback];
-    }
-  }
+  buttonEl.onclick = option.onClick;
 
   return {
     element: buttonEl,

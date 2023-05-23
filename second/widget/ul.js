@@ -1,8 +1,6 @@
 // option
-// id: 식별Id
-// sortOption
-// createLi: function()
-// sortList: function()
+// datas
+// columns
 
 export function createUl(option) {
   var ulEl = document.createElement("ul");
@@ -10,40 +8,26 @@ export function createUl(option) {
   ulEl.style.padding = "0";
   ulEl.id = option.id;
 
+  render(option.datas, option.columns);
+
   return {
     element: ulEl,
-    reload: function (items) {
-      reload(items);
+    reload: function (datas) {
+      ulEl.innerHTML = "";
+      render(datas, option.columns);
     },
   };
 
-  function reload(items) {
-    ulEl.innerHTML = "";
-
-    for (var item of items) {
+  function render(datas, columns) {
+    datas.forEach(function (data) {
       var liEl = document.createElement("li");
-      var checkbox = Widget.input({
-        type: "checkbox",
-      });
 
-      var span = Widget.span({
-        content: item.content,
+      columns.forEach(function (column) {
+        var control = column.render(data);
+        liEl.append(control);
       });
-
-      var button = Widget.button({
-        label: "삭제",
-        callbacks: {
-          onClick: function () {
-            items.splice(items.indexOf(item), 1);
-          },
-        },
-      });
-
-      liEl.append(checkbox.element);
-      liEl.append(span.element);
-      liEl.append(button.element);
 
       ulEl.append(liEl);
-    }
+    });
   }
 }

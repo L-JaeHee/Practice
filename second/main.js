@@ -1,5 +1,8 @@
 var items = [];
 
+var todolist;
+var donelist;
+
 render();
 
 function render() {
@@ -8,23 +11,32 @@ function render() {
     id: "inputControl",
     type: "text",
   });
+
   var inputBtnControl = Widget.button({
     id: "inputBtnControl",
     label: "입력",
-    callbacks: {
-      onClick: function () {
-        inputBtnClickHandler();
-        todolist.reload(getSortedItems({ done: false }));
-      },
+    onClick: function () {
+      inputBtnClickHandler();
+      todolist.reload(items);
     },
   });
-  var todolist = Widget.ul({
-    id: "todo-list",
-    items: items,
+
+  todolist = Widget.ul({
+    datas: getSortedItems({ done: false }),
+    columns: [
+      { render: renderColumnDone },
+      { render: renderColumnTodo },
+      { render: renderColumnDelete },
+    ],
   });
-  var donelist = Widget.ul({
-    id: "done-list",
-    items: items,
+
+  donelist = Widget.ul({
+    datas: getSortedItems({ done: true }),
+    columns: [
+      { render: renderColumnDone },
+      { render: renderColumnTodo },
+      { render: renderColumnDelete },
+    ],
   });
 
   root.append(inputControl.element);
@@ -45,4 +57,41 @@ function getSortedItems(option) {
   return items.filter(function (item) {
     return item.done === option.done;
   });
+}
+
+function renderColumnDone(item) {
+  var checkbox = Widget.input({
+    type: "checkbox",
+    done: item.done,
+    onClick: function (e) {
+      item.done = e.target.checked;
+
+      donelist.reload(getSortedItems({ done: true }));
+      todolist.reload(getSortedItems({ done: false }));
+    },
+  });
+
+  return checkbox.element;
+}
+
+function renderColumnTodo(item) {
+  var span = Widget.span({
+    content: item.content,
+  });
+
+  return span.element;
+}
+
+function renderColumnDelete(item) {
+  var button = Widget.button({
+    label: "삭제",
+    onClick: function (e) {
+      items.splice(items.indexOf(item), 1);
+      item.done
+        ? donelist.reload(getSortedItems({ done: true }))
+        : todolist.reload(getSortedItems({ done: false }));
+    },
+  });
+
+  return button.element;
 }

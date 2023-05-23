@@ -1,97 +1,108 @@
-var items = [];
+(function () {
+  var items = [];
 
-var todolist;
-var donelist;
+  var todolist;
+  var donelist;
+  var inputControl;
 
-render();
+  render();
 
-function render() {
-  var root = document.getElementById("root");
-  var inputControl = Widget.input({
-    id: "inputControl",
-    type: "text",
-  });
+  function render() {
+    var root = document.getElementById("root");
+    inputControl = Widget.input({
+      id: "inputControl",
+      type: "text",
+    });
 
-  var inputBtnControl = Widget.button({
-    id: "inputBtnControl",
-    label: "입력",
-    onClick: function () {
-      inputBtnClickHandler();
-      todolist.reload(items);
-    },
-  });
+    var inputBtnControl = Widget.button({
+      id: "inputBtnControl",
+      label: "입력",
+      onClick: function () {
+        inputBtnClickHandler();
+        todolist.reload(getSortedItems({ done: false }));
+      },
+    });
 
-  todolist = Widget.ul({
-    datas: getSortedItems({ done: false }),
-    columns: [
-      { render: renderColumnDone },
-      { render: renderColumnTodo },
-      { render: renderColumnDelete },
-    ],
-  });
+    todolist = Widget.ul({
+      datas: getSortedItems({ done: false }),
+      columns: [
+        { render: renderColumnDone },
+        { render: renderColumnTodo },
+        { render: renderColumnDelete },
+      ],
+    });
 
-  donelist = Widget.ul({
-    datas: getSortedItems({ done: true }),
-    columns: [
-      { render: renderColumnDone },
-      { render: renderColumnTodo },
-      { render: renderColumnDelete },
-    ],
-  });
+    donelist = Widget.ul({
+      datas: getSortedItems({ done: true }),
+      columns: [
+        { render: renderColumnDone },
+        { render: renderColumnTodo },
+        { render: renderColumnDelete },
+      ],
+    });
 
-  root.append(inputControl.element);
-  root.append(inputBtnControl.element);
-  root.append(todolist.element);
-  root.append(donelist.element);
-}
+    root.append(inputControl.element);
+    root.append(inputBtnControl.element);
+    root.append(todolist.element);
+    root.append(donelist.element);
+  }
 
-function inputBtnClickHandler() {
-  items.push({
-    id: crypto.randomUUID(),
-    content: document.getElementById("inputControl").value,
-    done: false,
-  });
-}
+  function inputBtnClickHandler() {
+    if (!inputControl.element.value) {
+      alert("할일을 입력해주세요");
+      return;
+    }
 
-function getSortedItems(option) {
-  return items.filter(function (item) {
-    return item.done === option.done;
-  });
-}
+    items.push({
+      id: crypto.randomUUID(),
+      content: inputControl.element.value,
+      done: false,
+    });
 
-function renderColumnDone(item) {
-  var checkbox = Widget.input({
-    type: "checkbox",
-    done: item.done,
-    onClick: function (e) {
-      item.done = e.target.checked;
+    inputControl.element.value = "";
+    inputControl.element.focus();
+  }
 
-      donelist.reload(getSortedItems({ done: true }));
-      todolist.reload(getSortedItems({ done: false }));
-    },
-  });
+  function getSortedItems(option) {
+    return items.filter(function (item) {
+      return item.done === option.done;
+    });
+  }
 
-  return checkbox.element;
-}
+  function renderColumnDone(item) {
+    var checkbox = Widget.input({
+      type: "checkbox",
+      done: item.done,
+      onClick: function (e) {
+        item.done = e.target.checked;
 
-function renderColumnTodo(item) {
-  var span = Widget.span({
-    content: item.content,
-  });
+        donelist.reload(getSortedItems({ done: true }));
+        todolist.reload(getSortedItems({ done: false }));
+      },
+    });
 
-  return span.element;
-}
+    return checkbox.element;
+  }
 
-function renderColumnDelete(item) {
-  var button = Widget.button({
-    label: "삭제",
-    onClick: function (e) {
-      items.splice(items.indexOf(item), 1);
-      item.done
-        ? donelist.reload(getSortedItems({ done: true }))
-        : todolist.reload(getSortedItems({ done: false }));
-    },
-  });
+  function renderColumnTodo(item) {
+    var span = Widget.span({
+      content: item.content,
+    });
 
-  return button.element;
-}
+    return span.element;
+  }
+
+  function renderColumnDelete(item) {
+    var button = Widget.button({
+      label: "삭제",
+      onClick: function (e) {
+        items.splice(items.indexOf(item), 1);
+        item.done
+          ? donelist.reload(getSortedItems({ done: true }))
+          : todolist.reload(getSortedItems({ done: false }));
+      },
+    });
+
+    return button.element;
+  }
+})();

@@ -3,10 +3,11 @@
 // type(string): input 타입
 // onClick
 
+import { addControl } from "./core";
+
 export function createInput(option) {
   var inputEl = document.createElement("input");
   inputEl.type = option.type;
-  inputEl.id = option.id;
   inputEl.checked = option.done;
 
   if (option.callbacks) {
@@ -15,7 +16,21 @@ export function createInput(option) {
     }
   }
 
-  return {
+  var control = {
+    id: option.id,
     element: inputEl,
+    getValue: function () {
+      return inputEl.value;
+    },
+    clear: function () {
+      inputEl.value = "";
+    },
+    focus: function () {
+      inputEl.focus();
+    },
   };
+
+  addControl(control);
+
+  return control;
 }

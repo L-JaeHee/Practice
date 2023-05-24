@@ -1,10 +1,12 @@
 // option
 // id: 식별Id
 // label: textContent
+
+import { addControl } from "./core";
+
 // onClick: 콜백
 export function createButton(option) {
   var buttonEl = document.createElement("button");
-  buttonEl.id = option.id;
   buttonEl.textContent = option.label;
 
   if (option.callbacks) {
@@ -13,7 +15,12 @@ export function createButton(option) {
     }
   }
 
-  return {
+  var control = {
+    id: option.id,
     element: buttonEl,
   };
+
+  addControl(control);
+
+  return control;
 }

@@ -1,67 +1,72 @@
 (function () {
   var items = [];
 
-  var todolist;
-  var donelist;
-  var inputControl;
-
   render();
 
   function render() {
-    var root = document.getElementById("root");
-    inputControl = Widget.input({
-      id: "inputControl",
-      type: "text",
-    });
+    var div = Widget.div({ id: "root" });
+    document.querySelector("body").append(div.element);
 
-    var inputBtnControl = Widget.button({
-      id: "inputBtnControl",
-      label: "입력",
-      callbacks: {
-        onClick: inputBtnClickHandler,
-      },
-    });
+    div.append(
+      Widget.input({
+        id: "inputControl",
+        type: "text",
+      })
+    );
 
-    todolist = Widget.ul({
-      datas: getSortedItems({ done: false }),
-      columns: [
-        { render: renderColumnDone },
-        { render: renderColumnTodo },
-        { render: renderColumnDelete },
-      ],
-    });
+    div.append(
+      Widget.button({
+        id: "inputBtnControl",
+        label: "입력",
+        callbacks: {
+          onClick: inputBtnClickHandler,
+        },
+      })
+    );
 
-    donelist = Widget.ul({
-      datas: getSortedItems({ done: true }),
-      columns: [
-        { render: renderColumnDone },
-        { render: renderColumnTodo },
-        { render: renderColumnDelete },
-      ],
-    });
+    div.append(
+      Widget.ul({
+        id: "todolist",
+        datas: getSortedItems({ done: false }),
+        columns: [
+          { render: renderColumnDone },
+          { render: renderColumnTodo },
+          { render: renderColumnDelete },
+        ],
+      })
+    );
 
-    root.append(inputControl.element);
-    root.append(inputBtnControl.element);
-    root.append(todolist.element);
-    root.append(donelist.element);
+    div.append(
+      Widget.ul({
+        id: "donelist",
+        datas: getSortedItems({ done: true }),
+        columns: [
+          { render: renderColumnDone },
+          { render: renderColumnTodo },
+          { render: renderColumnDelete },
+        ],
+      })
+    );
   }
 
   function inputBtnClickHandler() {
-    if (!inputControl.element.value) {
+    var inputControl = Widget.getControl("inputControl");
+
+    if (!inputControl.getValue()) {
       alert("할일을 입력해주세요");
       return;
     }
 
     items.push({
       id: crypto.randomUUID(),
-      content: inputControl.element.value,
+      content: inputControl.getValue(),
       done: false,
     });
 
-    inputControl.element.value = "";
-    inputControl.element.focus();
+    inputControl.clear();
+    inputControl.focus();
 
-    todolist.reload(getSortedItems({ done: false }));
+    Widget.getControl("todolist").reload(getSortedItems({ done: false }));
   }
 
   function getSortedItems(option) {
@@ -78,8 +83,8 @@
         onClick: function (e) {
           item.done = e.target.checked;
 
-          donelist.reload(getSortedItems({ done: true }));
-          todolist.reload(getSortedItems({ done: false }));
+          Widget.getControl("donelist").reload(getSortedItems({ done: true }));
+          Widget.getControl("todolist").reload(getSortedItems({ done: false }));
         },
       },
     });
@@ -102,8 +107,8 @@
         onClick: function (e) {
           items.splice(items.indexOf(item), 1);
           item.done
-            ? donelist.reload(getSortedItems({ done: true }))
-            : todolist.reload(getSortedItems({ done: false }));
+            ? Widget.getControl("donelist").reload(getSortedItems({ done: true }))
+            : Widget.getControl("todolist").reload(getSortedItems({ done: false }));
         },
       },
     });

@@ -2,21 +2,27 @@
 // datas
 // columns
 
+import { addControl } from "./core";
+
 export function createUl(option) {
   var ulEl = document.createElement("ul");
   ulEl.style.listStyle = "none";
   ulEl.style.padding = "0";
-  ulEl.id = option.id;
 
   render(option.datas, option.columns);
 
-  return {
+  var control = {
+    id: option.id,
     element: ulEl,
     reload: function (datas) {
       ulEl.innerHTML = "";
       render(datas, option.columns);
     },
   };
+
+  addControl(control);
+
+  return control;
 
   function render(datas, columns) {
     datas.forEach(function (data) {

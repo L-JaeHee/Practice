@@ -1,48 +1,6 @@
-function Menu(name, time) {
-  this.name = name;
-  this.time = time;
-}
-
-function Server(time) {
-  this.time = time;
-  this.status = true;
-}
-
-Server.prototype.isAvailable = function () {
-  return this.status;
-};
-
-Server.prototype.serveAsync = function (menu) {
-  var that = this;
-  this.status = false;
-
-  return new Promise(function (resolve) {
-    setTimeout(function () {
-      that.status = true;
-      resolve(menu);
-    }, that.time);
-  });
-};
-
-function Chef() {
-  this.status = true;
-}
-
-Chef.prototype.isAvailable = function () {
-  return this.status;
-};
-
-Chef.prototype.cookAsync = function (menu) {
-  var that = this;
-  this.status = false;
-
-  return new Promise(function (resolve) {
-    setTimeout(function () {
-      that.status = true;
-      resolve();
-    }, menu.time);
-  });
-};
+import Menu from "./menu.js";
+import Server from "./server.js";
+import Chef from "./chef.js";
 
 var orders = [];
 var cookings = [];

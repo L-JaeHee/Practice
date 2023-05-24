@@ -3,6 +3,28 @@ function Menu(name, time) {
   this.time = time;
 }
 
+function Server(time) {
+  this.time = time;
+  this.status = true;
+}
+
+Server.prototype.isAvailable = function () {
+  return this.status;
+};
+
+Server.prototype.serveAsync = function (menu) {
+  var that = this;
+
+  return new Promise(function (resolve) {
+    that.status = false;
+
+    setTimeout(function () {
+      that.status = true;
+      resolve(menu);
+    }, that.time);
+  });
+};
+
 function Chef() {
   this.status = true;
 }
@@ -29,6 +51,7 @@ var cookings = [];
 var servings = [];
 
 var chefs = [new Chef(), new Chef()];
+var servers = [new Server(1000), new Server(2000)];
 
 function renderOders() {
   var ordersEl = document.getElementById("orders");
@@ -93,7 +116,22 @@ function run(menu) {
       // 요리사한테 요리 시킴
       // -- 요리 목록으로 넘어가야 함
     })
-    .then(() => console.log("1"));
+    .then(function () {
+      return findServerAsync();
+    })
+    .then(function (server) {
+      cookings.splice(cookings.indexOf(menu), 1);
+      servings.push(menu);
+
+      renderCookings();
+      renderServings();
+
+      return server.serveAsync(menu);
+    })
+    .then(function (menu) {
+      servings.splice(servings.indexOf(menu), 1);
+      renderServings();
+    });
 
   // 서빙을 시킴
   // -- 서빙 목록으로 넘어가야 함
@@ -108,6 +146,23 @@ function findChefAsync() {
     var timer = setInterval(function () {
       target = chefs.find(function (chef) {
         return chef.isAvailable();
+      });
+
+      if (target) {
+        clearInterval(timer);
+        resolve(target);
+      }
+    }, 100);
+  });
+}
+
+function findServerAsync() {
+  return new Promise(function (resolve) {
+    var target;
+
+    var timer = setInterval(function () {
+      target = servers.find(function (server) {
+        return server.isAvailable();
       });
 
       if (target) {

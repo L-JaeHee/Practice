@@ -2,7 +2,7 @@
 // id: 식별Id
 // label: textContent
 
-import { addControl } from "./core";
+import { addControl, removeControl } from "./core";
 
 // onClick: 콜백
 export function createButton(option) {
@@ -18,6 +18,10 @@ export function createButton(option) {
   var control = {
     id: option.id,
     element: buttonEl,
+    dispose: function () {
+      buttonEl.remove();
+      removeControl(id);
+    },
   };
 
   addControl(control);

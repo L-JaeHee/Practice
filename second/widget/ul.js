@@ -2,7 +2,7 @@
 // datas
 // columns
 
-import { addControl } from "./core";
+import { addControl, removeControl } from "./core";
 
 export function createUl(option) {
   var ulEl = document.createElement("ul");
@@ -17,6 +17,10 @@ export function createUl(option) {
     reload: function (datas) {
       ulEl.innerHTML = "";
       render(datas, option.columns);
+    },
+    dispose: function () {
+      ulEl.remove();
+      removeControl(id);
     },
   };
 

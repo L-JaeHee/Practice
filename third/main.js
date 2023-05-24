@@ -4,7 +4,7 @@ function Menu(name, time) {
 }
 
 function Chef() {
-  this.status = false;
+  this.status = true;
 }
 
 Chef.prototype.isAvailable = function () {
@@ -12,8 +12,15 @@ Chef.prototype.isAvailable = function () {
 };
 
 Chef.prototype.cookAsync = function (menu) {
+  var that = this;
+
   return new Promise(function (resolve) {
-    setTimeout(resolve, menu.time);
+    that.status = false;
+
+    setTimeout(function () {
+      that.status = true;
+      resolve();
+    }, menu.time);
   });
 };
 
@@ -35,6 +42,30 @@ function renderOders() {
   });
 }
 
+function renderCookings() {
+  var cookingsEl = document.getElementById("cookings");
+  cookingsEl.innerHTML = "";
+
+  cookings.forEach(function (order) {
+    var liEl = document.createElement("li");
+    liEl.textContent = order.name;
+
+    cookingsEl.append(liEl);
+  });
+}
+
+function renderServings() {
+  var servingsEl = document.getElementById("servings");
+  servingsEl.innerHTML = "";
+
+  servings.forEach(function (order) {
+    var liEl = document.createElement("li");
+    liEl.textContent = order.name;
+
+    servingsEl.append(liEl);
+  });
+}
+
 document.getElementById("soon").onclick = function () {
   run(new Menu("순댓국", 1000));
 };
@@ -50,13 +81,39 @@ function run(menu) {
   renderOders();
 
   // 대기중인 요리사 찾기 (요리사가 있을 때까지 대기해야 함)
-  findChefAsync().then(function (chef) {
-    // 요리사한테 요리 시킴
-    // -- 요리 목록으로 넘어가야 함
-  });
+  findChefAsync()
+    .then(function (chef) {
+      orders.splice(orders.indexOf(menu), 1);
+      cookings.push(menu);
+
+      renderOders();
+      renderCookings();
+
+      return chef.cookAsync(menu);
+      // 요리사한테 요리 시킴
+      // -- 요리 목록으로 넘어가야 함
+    })
+    .then(() => console.log("1"));
 
   // 서빙을 시킴
   // -- 서빙 목록으로 넘어가야 함
 
   // 서빙 끝나면 서빙목록에서 사라짐
+}
+
+function findChefAsync() {
+  return new Promise(function (resolve) {
+    var target;
+
+    var timer = setInterval(function () {
+      target = chefs.find(function (chef) {
+        return chef.isAvailable();
+      });
+
+      if (target) {
+        clearInterval(timer);
+        resolve(target);
+      }
+    }, 100);
+  });
 }

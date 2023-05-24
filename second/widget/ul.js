@@ -21,6 +21,8 @@ export function createUl(option) {
     dispose: function () {
       ulEl.remove();
       removeControl(id);
+
+      // list이기 때문에 자식 요소들을 다 dispose해주어야 함. 따라서 자식 목록을 가지고 있어야 함.
     },
   };
 

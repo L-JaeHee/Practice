@@ -14,10 +14,9 @@ Server.prototype.isAvailable = function () {
 
 Server.prototype.serveAsync = function (menu) {
   var that = this;
+  this.status = false;
 
   return new Promise(function (resolve) {
-    that.status = false;
-
     setTimeout(function () {
       that.status = true;
       resolve(menu);
@@ -35,10 +34,9 @@ Chef.prototype.isAvailable = function () {
 
 Chef.prototype.cookAsync = function (menu) {
   var that = this;
+  this.status = false;
 
   return new Promise(function (resolve) {
-    that.status = false;
-
     setTimeout(function () {
       that.status = true;
       resolve();

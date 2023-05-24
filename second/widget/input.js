@@ -9,7 +9,11 @@ export function createInput(option) {
   inputEl.id = option.id;
   inputEl.checked = option.done;
 
-  inputEl.onclick = option.onClick;
+  if (option.callbacks) {
+    for (var callback of Object.keys(option.callbacks)) {
+      inputEl[callback.toLowerCase()] = option.callbacks[callback];
+    }
+  }
 
   return {
     element: inputEl,

@@ -17,7 +17,9 @@
     var inputBtnControl = Widget.button({
       id: "inputBtnControl",
       label: "입력",
-      onClick: inputBtnClickHandler,
+      callbacks: {
+        onClick: inputBtnClickHandler,
+      },
     });
 
     todolist = Widget.ul({
@@ -72,11 +74,13 @@
     var checkbox = Widget.input({
       type: "checkbox",
       done: item.done,
-      onClick: function (e) {
-        item.done = e.target.checked;
+      callbacks: {
+        onClick: function (e) {
+          item.done = e.target.checked;
 
-        donelist.reload(getSortedItems({ done: true }));
-        todolist.reload(getSortedItems({ done: false }));
+          donelist.reload(getSortedItems({ done: true }));
+          todolist.reload(getSortedItems({ done: false }));
+        },
       },
     });
 
@@ -94,11 +98,13 @@
   function renderColumnDelete(item) {
     var button = Widget.button({
       label: "삭제",
-      onClick: function (e) {
-        items.splice(items.indexOf(item), 1);
-        item.done
-          ? donelist.reload(getSortedItems({ done: true }))
-          : todolist.reload(getSortedItems({ done: false }));
+      callbacks: {
+        onClick: function (e) {
+          items.splice(items.indexOf(item), 1);
+          item.done
+            ? donelist.reload(getSortedItems({ done: true }))
+            : todolist.reload(getSortedItems({ done: false }));
+        },
       },
     });
 

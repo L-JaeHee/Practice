@@ -6,7 +6,12 @@ export function createButton(option) {
   var buttonEl = document.createElement("button");
   buttonEl.id = option.id;
   buttonEl.textContent = option.label;
-  buttonEl.onclick = option.onClick;
+
+  if (option.callbacks) {
+    for (var callback of Object.keys(option.callbacks)) {
+      buttonEl[callback.toLowerCase()] = option.callbacks[callback];
+    }
+  }
 
   return {
     element: buttonEl,

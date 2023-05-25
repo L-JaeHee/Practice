@@ -1,11 +1,11 @@
 import Menu from "./menu.js";
 import Server from "./server.js";
 import Chef from "./chef.js";
-import List from "./List.js";
+import MenuList from "./menuList.js";
 
-var orders = new List("orders");
-var cookings = new List("cookings");
-var servings = new List("servings");
+var orders = new MenuList("orders");
+var cookings = new MenuList("cookings");
+var servings = new MenuList("servings");
 
 var chefs = [new Chef(), new Chef()];
 var servers = [new Server(1000), new Server(2000)];

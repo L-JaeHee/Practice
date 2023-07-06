@@ -33,14 +33,14 @@ function run(menu: Menu): void {
       orders.remove(menu);
       cookings.add(menu);
 
-      return chef.cookAsync(menu);
+      return chef.behaveAsync(menu);
     })
     .then(() => findServerAsync())
     .then((server) => {
       cookings.remove(menu);
       servings.add(menu);
 
-      return server.serveAsync(menu);
+      return server.behaveAsync(menu);
     })
     .then((menu) => {
       servings.remove(menu);

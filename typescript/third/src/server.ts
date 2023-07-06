@@ -1,30 +1,22 @@
 import { Menu } from "./menu";
+import { Job } from "./job";
 
-export class Server {
+export class Server extends Job {
   private time: number;
-  private status: boolean;
 
   constructor(time: number) {
+    super();
     this.time = time;
-    this.status = true;
   }
 
-  public isAvailable(): boolean {
-    return this.status;
-  }
-
-  public serveAsync(menu: Menu): Promise<Menu> {
+  public override behaveAsync(menu: Menu): Promise<Menu> {
     this.convertStatus();
 
-    return new Promise<Menu>((resolve) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         this.convertStatus();
         resolve(menu);
       }, this.time);
     });
-  }
-
-  private convertStatus(): void {
-    this.status = this.status ? false : true;
   }
 }

@@ -1,28 +1,19 @@
 import { Menu } from "./menu";
+import { Job } from "./job";
 
-export class Chef {
-  private status: boolean;
-
+export class Chef extends Job {
   constructor() {
-    this.status = true;
+    super();
   }
 
-  public isAvailable(): boolean {
-    return this.status;
-  }
-
-  public cookAsync(menu: Menu): Promise<boolean> {
+  public override behaveAsync(menu: Menu): Promise<Menu> {
     this.convertStatus();
 
-    return new Promise<boolean>((resolve) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         this.convertStatus();
-        resolve(true);
+        resolve(menu);
       }, menu.time);
     });
-  }
-
-  private convertStatus(): void {
-    this.status = this.status ? false : true;
   }
 }

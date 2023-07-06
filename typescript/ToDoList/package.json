@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.83.1",
+    "webpack-cli": "^5.1.1"
+  },
+  "devDependencies": {
+    "tsconfig-paths": "^4.2.0"
+  }
+}

@@ -1,4 +1,3 @@
-import { widget } from "./baseWidget";
 import { ControlBase } from "./core";
 
 type Option = {
@@ -7,20 +6,15 @@ type Option = {
   onclick: (event: MouseEvent) => void;
 };
 
-export interface Button extends ControlBase {
-  type: "button";
+export class ButtonControl extends ControlBase {
+  protected _element: HTMLButtonElement;
+
+  constructor(option: Option) {
+    super(option.id);
+
+    const buttonEl = document.createElement("button");
+    buttonEl.textContent = option.content;
+    buttonEl.onclick = option.onclick;
+    this._element = buttonEl;
+  }
 }
-
-function _createButton(option: Option): Button {
-  const buttonEl = document.createElement("button");
-  buttonEl.textContent = option.content;
-  buttonEl.onclick = option.onclick;
-
-  return {
-    id: option.id,
-    type: "button",
-    element: buttonEl,
-  };
-}
-
-export const createButton = widget(_createButton);

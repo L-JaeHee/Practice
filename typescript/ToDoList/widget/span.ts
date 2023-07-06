@@ -1,24 +1,18 @@
 import { ControlBase } from "./core";
-import { widget } from "./baseWidget";
 
 type Option = {
   id: string;
   content: string;
 };
 
-export interface Span extends ControlBase {
-  type: "span";
+export class SpanControl extends ControlBase {
+  protected _element: HTMLSpanElement;
+
+  constructor(option: Option) {
+    super(option.id);
+
+    const spanEl = document.createElement("span");
+    spanEl.textContent = option.content;
+    this._element = spanEl;
+  }
 }
-
-function _createSpan(option: Option): Span {
-  const spanEl = document.createElement("span");
-  spanEl.textContent = option.content;
-
-  return {
-    type: "span",
-    id: option.id,
-    element: spanEl,
-  };
-}
-
-export const createSpan = widget(_createSpan);

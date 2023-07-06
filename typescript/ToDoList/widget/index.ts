@@ -1,18 +1,8 @@
-import { createButton } from "./button";
 import { getControl } from "./core";
-import { createDiv } from "./div";
-import { createInput } from "./input";
-import { createSpan } from "./span";
-import { createUl } from "./ul";
+import { Model as model } from "./model";
 
 export const Widget = {
-  button: createButton,
-  ul: createUl,
-  input: createInput,
-  span: createSpan,
-  div: createDiv,
+  getControl,
 };
 
-export const WidgetMethod = {
-  getControl: getControl,
-};
+export const Model = model;

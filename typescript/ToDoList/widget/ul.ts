@@ -1,4 +1,3 @@
-import { widget } from "./baseWidget";
 import { ControlBase } from "./core";
 
 declare global {
@@ -16,29 +15,29 @@ type Option = {
   columns: column[];
 };
 
-export interface Ul extends ControlBase {
-  type: "ul";
-  reload: (datas: data[]) => void;
-}
+export class UlControl extends ControlBase {
+  protected _element: HTMLUListElement;
+  private _columns: column[];
 
-function _createUl(option: Option): Ul {
-  const ulEl = document.createElement("ul");
-  ulEl.style.listStyle = "none";
-  ulEl.style.padding = "0";
+  constructor(option: Option) {
+    super(option.id);
 
-  render(option.datas, option.columns);
+    const ulEl = document.createElement("ul");
+    ulEl.style.listStyle = "none";
+    ulEl.style.padding = "0";
 
-  return {
-    id: option.id,
-    type: "ul",
-    element: ulEl,
-    reload: function (datas: data[]): void {
-      ulEl.innerHTML = "";
-      render(datas, option.columns);
-    },
-  };
+    this._element = ulEl;
+    this._columns = option.columns;
 
-  function render(datas: data[], columns: column[]) {
+    this.render(option.datas, option.columns);
+  }
+
+  public reload(datas: data[]): void {
+    this._element.innerHTML = "";
+    this.render(datas, this._columns);
+  }
+
+  public render(datas: data[], columns: column[]) {
     datas.forEach((data) => {
       const liEl = document.createElement("li");
 
@@ -46,9 +45,7 @@ function _createUl(option: Option): Ul {
         liEl.append(column.render(data));
       });
 
-      ulEl.append(liEl);
+      this._element.append(liEl);
     });
   }
 }
-
-export const createUl = widget(_createUl);

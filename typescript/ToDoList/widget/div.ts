@@ -1,26 +1,20 @@
-import { widget } from "./baseWidget";
 import { ControlBase } from "./core";
 
 type Option = {
   id: string;
 };
 
-export interface Div extends ControlBase {
-  type: "div";
-  append: (control: ControlBase) => void;
+export class DivControl extends ControlBase {
+  protected _element: HTMLDivElement;
+
+  constructor(option: Option) {
+    super(option.id);
+
+    const divEl = document.createElement("div");
+    this._element = divEl;
+  }
+
+  public append(control: ControlBase) {
+    this._element.append(control.element);
+  }
 }
-
-function _createDiv(option: Option): Div {
-  const divEl = document.createElement("div");
-
-  return {
-    id: option.id,
-    type: "div",
-    element: divEl,
-    append: function (control) {
-      divEl.append(control.element);
-    },
-  };
-}
-
-export const createDiv = widget(_createDiv);

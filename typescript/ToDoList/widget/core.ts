@@ -1,13 +1,25 @@
 const controls: ControlBase[] = [];
 
-export interface ControlBase {
-  type: string;
-  id: string;
-  element: HTMLElement;
-}
+export abstract class ControlBase {
+  protected _id: string;
+  protected abstract _element: HTMLElement;
 
-export function addControl(control: ControlBase): void {
-  controls.push(control);
+  constructor(id: string) {
+    this._id = id;
+    addControl(this);
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  get element(): HTMLElement {
+    return this._element;
+  }
+
+  public dispose() {
+    removeControl(this._id);
+  }
 }
 
 export function getControl(id: string): ControlBase | undefined {
@@ -16,7 +28,11 @@ export function getControl(id: string): ControlBase | undefined {
   });
 }
 
-export function removeControl(id: string): void {
+function addControl(control: ControlBase): void {
+  controls.push(control);
+}
+
+function removeControl(id: string): void {
   controls.splice(
     controls.findIndex((control) => control.id === id),
     1

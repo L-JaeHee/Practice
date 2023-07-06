@@ -1,4 +1,3 @@
-import { widget } from "./baseWidget";
 import { ControlBase } from "./core";
 
 type Option = {
@@ -8,39 +7,29 @@ type Option = {
   onclick?: (event: MouseEvent) => void;
 };
 
-export interface Input extends ControlBase {
-  type: "input";
-  getValue: () => string;
-  clear: () => void;
-  focus: () => void;
-}
+export class inputControl extends ControlBase {
+  protected _element: HTMLInputElement;
 
-function _createInput(option: Option): Input {
-  const inputEl = document.createElement("input");
-  inputEl.type = option.inputType;
+  constructor(option: Option) {
+    super(option.id);
 
-  if (option.checked) {
-    inputEl.checked = option.checked;
+    const inputEl = document.createElement("input");
+    inputEl.type = option.inputType;
+    inputEl.checked = option.checked ?? false;
+    inputEl.onclick = option.onclick ?? null;
+
+    this._element = inputEl;
   }
 
-  if (option.onclick) {
-    inputEl.onclick = option.onclick;
+  public getValue(): string {
+    return this._element.value;
   }
 
-  return {
-    id: option.id,
-    type: "input",
-    element: inputEl,
-    getValue: function () {
-      return inputEl.value;
-    },
-    clear: function () {
-      inputEl.value = "";
-    },
-    focus: function () {
-      inputEl.focus();
-    },
-  };
-}
+  public clear(): void {
+    this._element.value = "";
+  }
 
-export const createInput = widget(_createInput);
+  public focus(): void {
+    this._element.focus();
+  }
+}

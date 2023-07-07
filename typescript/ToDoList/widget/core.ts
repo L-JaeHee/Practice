@@ -1,4 +1,4 @@
-const controls: ControlBase[] = [];
+const controls: Map<string, ControlBase> = new Map();
 
 export abstract class ControlBase {
   protected _id: string;
@@ -23,18 +23,13 @@ export abstract class ControlBase {
 }
 
 export function getControl(id: string): ControlBase | undefined {
-  return controls.find((control) => {
-    return control.id === id;
-  });
+  return controls.get(id);
 }
 
 function addControl(control: ControlBase): void {
-  controls.push(control);
+  controls.set(control.id, control);
 }
 
 function removeControl(id: string): void {
-  controls.splice(
-    controls.findIndex((control) => control.id === id),
-    1
-  );
+  controls.delete(id);
 }

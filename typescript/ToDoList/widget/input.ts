@@ -7,7 +7,7 @@ type Option = {
   onclick?: (event: MouseEvent) => void;
 };
 
-export class inputControl extends ControlBase {
+export class InputControl extends ControlBase {
   protected _element: HTMLInputElement;
 
   constructor(option: Option) {

@@ -8,7 +8,7 @@ function render() {
   const div = new Model.DivControl({ id: "root" });
   document.body.append(div.element);
 
-  div.append(new Model.inputControl({ id: "inputControl", inputType: "text" }));
+  div.append(new Model.InputControl({ id: "inputControl", inputType: "text" }));
   div.append(new Model.ButtonControl({ id: "inputBtnControl", content: "입력", onclick: inputBtnClickHandler }));
   div.append(
     new Model.UlControl({
@@ -29,7 +29,7 @@ function render() {
 function inputBtnClickHandler(): void {
   const inputControl = Widget.getControl("inputControl");
 
-  if (inputControl instanceof Model.inputControl) {
+  if (inputControl instanceof Model.InputControl) {
     if (!inputControl.getValue()) {
       alert("할일을 입력해주세요");
       return;
@@ -45,11 +45,9 @@ function inputBtnClickHandler(): void {
     inputControl.focus();
   }
 
-  const todolistControl = Widget.getControl("todolist");
+  const todolistControl = Widget.getControl("todolist") as InstanceType<typeof Model.UlControl>;
 
-  if (todolistControl instanceof Model.UlControl) {
-    todolistControl.reload(getSortedItems({ checked: false }));
-  }
+  todolistControl.reload(getSortedItems({ checked: false }));
 }
 
 function getSortedItems(option: { checked: boolean }): data[] {
@@ -59,20 +57,18 @@ function getSortedItems(option: { checked: boolean }): data[] {
 }
 
 function renderColumnDone(data: data): HTMLElement {
-  const checkbox = new Model.inputControl({
-    id: data.id,
+  const checkbox = new Model.InputControl({
+    id: `${data.id}:done`,
     inputType: "checkbox",
     checked: data.checked,
     onclick: (event: MouseEvent) => {
       data.checked = (event.target as HTMLInputElement).checked;
 
-      const donelist = Widget.getControl("donelist");
-      const todolist = Widget.getControl("todolist");
+      const donelist = Widget.getControl("donelist") as InstanceType<typeof Model.UlControl>;
+      const todolist = Widget.getControl("todolist") as InstanceType<typeof Model.UlControl>;
 
-      if (donelist instanceof Model.UlControl && todolist instanceof Model.UlControl) {
-        donelist.reload(getSortedItems({ checked: true }));
-        todolist.reload(getSortedItems({ checked: false }));
-      }
+      donelist.reload(getSortedItems({ checked: true }));
+      todolist.reload(getSortedItems({ checked: false }));
     },
   });
 
@@ -80,24 +76,26 @@ function renderColumnDone(data: data): HTMLElement {
 }
 
 function renderColumnTodo(data: data): HTMLElement {
-  const span = new Model.SpanControl({ id: data.id, content: data.content });
+  const span = new Model.SpanControl({ id: `${data.id}:todo`, content: data.content });
 
   return span.element;
 }
 
 function renderColumnDelete(data: data): HTMLElement {
   const button = new Model.ButtonControl({
-    id: data.id,
+    id: `${data.id}:delete`,
     content: "삭제",
     onclick: (event: MouseEvent) => {
       items.splice(items.indexOf(data), 1);
 
-      const donelist = Widget.getControl("donelist");
-      const todolist = Widget.getControl("todolist");
+      const donelist = Widget.getControl("donelist") as InstanceType<typeof Model.UlControl>;
+      const todolist = Widget.getControl("todolist") as InstanceType<typeof Model.UlControl>;
 
-      if (donelist instanceof Model.UlControl && todolist instanceof Model.UlControl) {
-        data.checked ? donelist.reload(getSortedItems({ checked: true })) : todolist.reload(getSortedItems({ checked: false }));
-      }
+      data.checked ? donelist.reload(getSortedItems({ checked: true })) : todolist.reload(getSortedItems({ checked: false }));
+
+      ["done", "todo", "delete"].forEach((keyWord) => {
+        Widget.getControl(`${data.id}:${keyWord}`)?.dispose();
+      });
     },
   });
 

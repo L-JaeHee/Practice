@@ -5,25 +5,26 @@ const items: data[] = [];
 render();
 
 function render() {
-  const div = new Model.DivControl({ id: "root" });
-  document.body.append(div.element);
+  const rootDiv = new Model.DivControl({ id: "root" });
+  document.body.append(rootDiv.element);
 
-  div.append(new Model.InputControl({ id: "inputControl", inputType: "text" }));
-  div.append(new Model.ButtonControl({ id: "inputBtnControl", content: "입력", onclick: inputBtnClickHandler }));
-  div.append(
-    new Model.UlControl({
-      id: "todolist",
-      datas: getItemsByChecked(false),
-      columns: [{ render: renderColumnDone }, { render: renderColumnTodo }, { render: renderColumnDelete }],
-    })
-  );
-  div.append(
-    new Model.UlControl({
-      id: "donelist",
-      datas: getItemsByChecked(true),
-      columns: [{ render: renderColumnDone }, { render: renderColumnTodo }, { render: renderColumnDelete }],
-    })
-  );
+  rootDiv
+    .append(new Model.InputControl({ id: "inputControl", inputType: "text" }))
+    .append(new Model.ButtonControl({ id: "inputBtnControl", content: "입력", onclick: inputBtnClickHandler }))
+    .append(
+      new Model.UlControl({
+        id: "todolist",
+        datas: getItemsByChecked(false),
+        columns: [{ render: renderColumnDone }, { render: renderColumnTodo }, { render: renderColumnDelete }],
+      })
+    )
+    .append(
+      new Model.UlControl({
+        id: "donelist",
+        datas: getItemsByChecked(true),
+        columns: [{ render: renderColumnDone }, { render: renderColumnTodo }, { render: renderColumnDelete }],
+      })
+    );
 }
 
 function inputBtnClickHandler(): void {

@@ -13,8 +13,4 @@ export class DivControl extends ControlBase {
     const divEl = document.createElement("div");
     this._element = divEl;
   }
-
-  public append(control: ControlBase) {
-    this._element.append(control.element);
-  }
 }

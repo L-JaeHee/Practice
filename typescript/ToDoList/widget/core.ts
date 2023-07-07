@@ -20,6 +20,11 @@ export abstract class ControlBase {
   public dispose() {
     removeControl(this._id);
   }
+
+  public append(control: ControlBase): this {
+    this._element.append(control.element);
+    return this;
+  }
 }
 
 export function getControl(id: string): ControlBase | undefined {
